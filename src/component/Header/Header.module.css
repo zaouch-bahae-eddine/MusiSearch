@@ -1,0 +1,69 @@
+.HeaderContent{
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.712),rgba(0, 0, 0, 0)), url('../../img/background.jpg');
+    background-position: center, top;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding-top: 60px;
+    padding-bottom: 12px;
+}
+.HeaderIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.HeaderRendB{
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.HeaderRendR{
+    width: 180px;
+    height: 180px;
+    background-color: #ff7276;
+    border-radius: 50%;
+    background-image: url('../../img/icon.png');
+    background-size: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.HeaderText{
+    width: 90%;
+    margin: 0 auto;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 12px;
+}
+.HeaderTitle{
+    font-family: 'Rubik', sans-serif;
+    font-size: 2.8rem;
+}
+.HeaderTitle span{
+    color: #ff7276;
+}
+.HeaderDescription{
+    padding-top: 10px;
+    width: 240px;
+    margin: 0 auto;
+}
+.HeaderButton{
+    display: flex;
+    justify-content: center;
+}
+.Sinscrir{
+    width: 180px;
+    text-align: center;
+    padding: 1rem;
+    background-color: #ff7276;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+}
