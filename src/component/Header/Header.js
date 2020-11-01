@@ -6,25 +6,28 @@ const Header = (props)=>{
         <div className={style.Header}>
 
             <NavBar/>
-            <div className={style.HeaderContent}>
+            <div className={style.HeaderBackground}>
+                
+                <div className={style.HeaderContent}>
 
-                <div className={style.HeaderIcon}>
+                    <div className={style.HeaderIcon}>
 
-                    <div className={style.HeaderRendB}>
-                        <div className={style.HeaderRendR}></div>
+                        <div className={style.HeaderRendB}>
+                            <div className={style.HeaderRendR}></div>
+                        </div>
+
                     </div>
 
-                </div>
+                    <div className={style.HeaderText}>
 
-                <div className={style.HeaderText}>
+                        <h1 className={style.HeaderTitle}>Musi<span>Search</span></h1>
+                        <p className={style.HeaderDescription}>Lorem ipsum dolor, sit cessitatibus praesentium ratione dolore porro quos culpa quia.</p>
+                        <div className={style.HeaderButton}>
+                            <a href="#" className={style.Sinscrir}> S'inscrir</a>
+                        </div>
+                    </div>
 
-                    <h1 className={style.HeaderTitle}>Musi<span>Search</span></h1>
-                    <p className={style.HeaderDescription}>Lorem ipsum dolor, sit cessitatibus praesentium ratione dolore porro quos culpa quia.</p>
 
-                </div>
-
-                <div className={style.HeaderButton}>
-                    <a href="#" className={style.Sinscrir}> S'inscrir</a>
                 </div>
             </div>
 

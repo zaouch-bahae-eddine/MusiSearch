@@ -1,0 +1,33 @@
+.FooterContainer{
+    width: 100%;
+}
+.FooterLogo{
+    height: 160px;
+    background-color: #252d47;
+    background-image: url('../../img/logo.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 150px auto;
+
+}
+
+.FooterBottom{
+    background-color: #191e30;
+    padding: 10px;
+    display: flex;
+    color: white;
+    font-size: 0.7rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.FooterSocialNetwork{
+    color: white;
+}
+.FooterCopyRight{
+    margin-left: auto;
+}
+.icon{
+    color: #ff7276;
+    margin-right: 5px;
+}
