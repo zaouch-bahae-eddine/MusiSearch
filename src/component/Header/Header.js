@@ -18,15 +18,16 @@ const Header = (props)=>{
 
                     </div>
 
-                    <div className={style.HeaderText}>
+                    <div className={style.HeaderTextParent}>
+                        <div className={style.HeaderText}>
 
-                        <h1 className={style.HeaderTitle}>Musi<span>Search</span></h1>
-                        <p className={style.HeaderDescription}>Lorem ipsum dolor, sit cessitatibus praesentium ratione dolore porro quos culpa quia.</p>
-                        <div className={style.HeaderButton}>
-                            <a href="#" className={style.Sinscrir}> S'inscrir</a>
+                            <h1 className={style.HeaderTitle}>Musi<span>Search</span></h1>
+                            <p className={style.HeaderDescription}>Lorem ipsum dolor, sit cessitatibus praesentium ratione dolore porro quos culpa quia.</p>
+                            <div className={style.HeaderButton}>
+                                <a href="#" className={style.Sinscrir}> S'inscrir</a>
+                            </div>
                         </div>
                     </div>
-
 
                 </div>
             </div>
