@@ -1,0 +1,18 @@
+.AudioContainer{
+    background-color: lightblue;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+.AudioButtonControl{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+}
+.currentTime{
+    order: -1;
+}
