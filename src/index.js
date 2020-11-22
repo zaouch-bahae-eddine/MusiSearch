@@ -5,6 +5,7 @@ import MainApp from './component/Content/MainApp/MainApp';
 import './index.module.css';
 ReactDOM.render(
   <React.StrictMode>
+    <App/>
     <MainApp/>
   </React.StrictMode>,
   document.getElementById('root')

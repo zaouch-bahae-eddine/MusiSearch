@@ -4,15 +4,42 @@
     bottom: 0;
     width: 100%;
     padding: 10px;
-    display: flex;
-    justify-content: center;
 }
 .AudioButtonControl{
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 95%;
+    margin: 0 auto;
 }
 .currentTime{
     order: -1;
+}
+.AudioProgress{
+    width: 100%;
+    border-radius: 3px;
+    padding: 20px 5px;
+}
+.AudioProgressBar{
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+.AudioProgressBar, .AudioProgressBarFull{
+    width: 95%;
+    height: 5px;
+    background-color: mediumseagreen;
+    border-radius: 5px;
+}
+.AudioProgressBarFull{
+    position: relative;
+    background-color: blue;
+    width: 0%;
+}
+.Pin{
+    background-color: white;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    transform: translateY(-6px);
 }
