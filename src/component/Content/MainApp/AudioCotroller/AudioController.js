@@ -38,6 +38,7 @@ class AudioController extends Component {
         this.audio.pause();
         this.props.next();
         this.progressBar.current.firstElementChild.style.width = 0;
+        this.currentTimeTimer.current.innerHTML = this.formatTime(0);
     }
     previousAudio = () => {
         if(this.audio.currentTime < 3) {
@@ -48,6 +49,7 @@ class AudioController extends Component {
             this.audio.currentTime = 0;
         }
         this.progressBar.current.firstElementChild.style.width = 0;
+        this.currentTimeTimer.current.innerHTML = this.formatTime(0);
     }
 
     startTimeReading = () => {
