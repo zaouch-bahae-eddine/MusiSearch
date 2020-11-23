@@ -12,8 +12,12 @@ class AudioController extends Component {
             currentTime: 0,
         };
         this.audio = new Audio(props.url);
+        this.audio.preload = "metadata";
         this.timeTrigger = null;
+        this.fullScreenVerrou = React.createRef();
         this.progressBar = React.createRef();
+        this.durationTimer = React.createRef();
+        this.currentTimeTimer = React.createRef();
         this.fullProgressBarPurcent = 0;
     }
 
@@ -36,20 +40,29 @@ class AudioController extends Component {
         this.progressBar.current.firstElementChild.style.width = 0;
     }
     previousAudio = () => {
-        this.audio.pause();
-        this.props.previous();
+        if(this.audio.currentTime < 3) {
+            this.audio.pause();
+            this.props.previous();
+        } else {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+        }
         this.progressBar.current.firstElementChild.style.width = 0;
     }
 
     startTimeReading = () => {
         this.timeTrigger = setInterval(()=>{
-            this.setState({currentTime: this.audio.currentTime});
-        }, 1000);
+            this.currentTimeTimer.current.innerHTML = this.formatTime(this.audio.currentTime);
+            this.fullProgressBarPurcent = (this.audio.currentTime * 100 / this.audio.duration) ;
+            this.progressBar.current.firstElementChild.style.width = this.fullProgressBarPurcent + "%";
+        }, 100);
     }
     stopTimeReading = () => {
         clearInterval(this.timeTrigger);
     }
     formatTime = (time) => {
+        if (isNaN(time))
+            return '--:--';
         var min = Math.floor(time / 60);
         var sec = Math.floor(time % 60);
         return min + ':' + ((sec<10) ? ('0' + sec) : sec);
@@ -68,15 +81,14 @@ class AudioController extends Component {
     dragStart = (e) => {
         this.audio.pause();
         this.progressUpdate(e);
+        this.fullScreenVerrou.current.style.display = "block";
         this.active = true;
     }
     dragEnd = (e) => {
         this.active = false;
-       // this.audio.currentTime = (this.audio.duration * this.fullProgressBarPurcent) / 100;
-
-        this.setState((prevState)=>{
-            return {currentTime: this.audio.currentTime};
-        });
+        this.fullScreenVerrou.current.style.display = "none";
+        this.audio.currentTime = (this.audio.duration * this.fullProgressBarPurcent) / 100;
+        this.currentTimeTimer.current.innerHTML = this.formatTime(this.audio.currentTime);
         if(this.state.played) {
             this.audio.play();
         }
@@ -84,19 +96,17 @@ class AudioController extends Component {
     drag = (e) => {
         if(this.active) {
             this.progressUpdate(e);
-            this.setState(()=>{
-                return {currentTime: this.timeByProgress()};
-            });
+            this.audio.currentTime = (this.audio.duration * this.fullProgressBarPurcent) / 100;
+            this.currentTimeTimer.current.innerHTML = this.formatTime(this.audio.currentTime);
         }
     }
         /* DRAG AND DROP LOGIC */
 
          /* Life cycle methodes */
          componentDidMount() {
-            this.audio.preload = "metadata";
             this.audio.addEventListener('loadedmetadata', ()=>{
                 console.log('eventHandler : ' + this.audio.duration);
-                this.setState({duration: this.audio.duration});
+                this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
             });
             this.audio.addEventListener('ended', ()=>{
                 console.log('endeed:componentDidMount');
@@ -111,6 +121,8 @@ class AudioController extends Component {
             this.progressBar.current.addEventListener("mousedown", this.dragStart, false);
             this.progressBar.current.addEventListener("mouseup", this.dragEnd, false);
             this.progressBar.current.addEventListener("mousemove", this.drag, false);
+            this.fullScreenVerrou.current.addEventListener("mousemove", this.drag, false);
+            this.fullScreenVerrou.current.addEventListener("mouseup", this.dragEnd, false);
         }
         componentWillUnmount() {
             console.log('unmount');
@@ -131,12 +143,20 @@ class AudioController extends Component {
             this.progressBar.current.removeEventListener("mousedown", this.dragStart, false);
             this.progressBar.current.removeEventListener("mouseup", this.dragEnd, false);
             this.progressBar.current.removeEventListener("mousemove", this.drag, false);
+            
+            this.fullScreenVerrou.current.removeEventListener("mousemove", this.drag, false);
+            this.fullScreenVerrou.current.removeEventListener("mouseup", this.dragEnd, false);
         }
         shouldComponentUpdate(nextProps, nextState){
             if (this.props.id != nextProps.id) {
                 this.audio.pause();
+                delete this.audio;
                 this.audio = new Audio(nextProps.url);
                 this.audio.preload = "metadara";
+                this.audio.addEventListener('loadedmetadata', ()=>{
+                    console.log('eventHandler : ' + this.audio.duration);
+                    this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
+                });
                 console.log('should :' + this.audio.preload );
                 return true;
             } else {
@@ -157,9 +177,12 @@ class AudioController extends Component {
                         onClick={()=>{this.switchPlay()}}>play</div>
                     <div className={style.Next} 
                         onClick={()=>{this.nextAudio()}}>next</div>
-                    <div className={style.currentTime}>{this.formatTime(this.audio.currentTime)}</div>
-                    <div className={style.duration}>{this.formatTime(this.audio.duration)}</div>
+                    <div className={style.currentTime} ref={this.currentTimeTimer}>{this.formatTime(this.audio.currentTime)}</div>
+                    <div className={style.duration} ref={this.durationTimer}>{this.formatTime(this.audio.duration)}</div>
                 </div>
+
+                <div className={style.FullScreenVerrou} ref={this.fullScreenVerrou}></div>
+
                 <div className={style.AudioProgress}>
                     <div className={style.AudioProgressBar} ref={this.progressBar}>
                         <div className={style.AudioProgressBarFull}></div>
