@@ -15,17 +15,21 @@ class AudioController extends Component {
         super(props);
         this.state = {
             played: false,
-            volume: 0.2,
+            volume: 0.5,
             currentTime: 0,
         };
         this.audio = new Audio(props.url);
         this.audio.preload = "metadata";
+        this.audio.volume = this.state.volume;
         this.timeTrigger = null;
         this.fullScreenVerrou = React.createRef();
         this.progressBar = React.createRef();
         this.durationTimer = React.createRef();
         this.currentTimeTimer = React.createRef();
+        this.progressBarVolume = React.createRef();
+        this.VolumeVerrou = React.createRef();
         this.fullProgressBarPurcent = 0;
+        this.fullProgressBarPurcentVolume = 0;
     }
 
     switchPlay = () => {
@@ -52,14 +56,16 @@ class AudioController extends Component {
     }
     previousAudio = () => {
         if(this.audio.currentTime < 3) {
-            this.audio.pause();
             this.props.previous();
-        } else {
-            this.audio.pause();
-            this.audio.currentTime = 0;
         }
-        this.progressBar.current.firstElementChild.style.width = 0;
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.progressBar.current.firstElementChild.style.width = "0%";
         this.currentTimeTimer.current.innerHTML = this.formatTime(0);
+        this.setState(()=>{
+            return {played: false};
+        });
+        
     }
 
     startTimeReading = () => {
@@ -86,7 +92,10 @@ class AudioController extends Component {
         /* DRAG AND DROP LOGIC */
     progressUpdate = (e) => {
         let progressBarWidth = this.progressBar.current.clientWidth;
-        this.fullProgressBarPurcent = (((e.clientX - 15)*100) / progressBarWidth);
+        if (e.type === "touchstart" || e.type === "touchmove")
+            this.fullProgressBarPurcent  = (((e.touches[0].clientX - this.progressBar.current.offsetLeft - 3)*100) / progressBarWidth);
+        else 
+            this.fullProgressBarPurcent = (((e.clientX - this.progressBar.current.offsetLeft - 3)*100) / progressBarWidth);
         this.progressBar.current.firstElementChild.style.width = this.fullProgressBarPurcent > 0 ? (this.fullProgressBarPurcent + "%") : "0" ;
     }
     dragStart = (e) => {
@@ -115,10 +124,46 @@ class AudioController extends Component {
             this.startTimeReading();
         }
     }
+    /*Volume Logic */
+    
+    VolumeProgressUpdate = (e) => {
+        let position = this.progressBarVolume.current.getBoundingClientRect();
+        const raport = position.bottom - position.top;
+        let postionRaport = -(e.clientY - position.bottom);
+        if (postionRaport <= 0) {
+            this.fullProgressBarPurcentVolume = 0;
+        } else if (postionRaport >= position.top){
+            this.fullProgressBarPurcentVolume = 100;
+        } else {
+            this.fullProgressBarPurcentVolume = postionRaport * 100 / raport;
+        }
+        this.progressBarVolume.current.firstElementChild.style.width = this.fullProgressBarPurcentVolume >100 ? "100%" : this.fullProgressBarPurcentVolume + "%";
+        this.audio.volume = this.fullProgressBarPurcentVolume / 100 > 1? 1: this.fullProgressBarPurcentVolume / 100;
+        this.setState(()=>{
+            return {volume: this.audio.volume};
+        });
+    }
+    dragStartVolume = (e) => {
+       this.VolumeVerrou.current.style.display = "block";
+       this.VolumeProgressUpdate(e);
+        this.active = true;
+    }
+    dragVolume = (e) => {
+        if(this.active) {
+            
+        console.log('position: ' + e.clientY + " offsetBottom: " + this.progressBar.current.offsetTop);
+            this.VolumeProgressUpdate(e);
+         }
+    }
+    dragEndVolume = (e) => {
+        this.active = false;
+        this.VolumeVerrou.current.style.display = "none";
+    }
         /* DRAG AND DROP LOGIC */
 
          /* Life cycle methodes */
          componentDidMount() {
+            this.progressBarVolume.current.firstElementChild.style.width = this.state.volume * 100 + "%";
             this.audio.addEventListener('loadedmetadata', ()=>{
                 console.log('eventHandler : ' + this.audio.duration);
                 this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
@@ -138,9 +183,23 @@ class AudioController extends Component {
             this.progressBar.current.addEventListener("mousedown", this.dragStart, false);
             this.progressBar.current.addEventListener("mouseup", this.dragEnd, false);
             this.progressBar.current.addEventListener("mousemove", this.drag, false);
-
+            
+            this.fullScreenVerrou.current.addEventListener("touchend", this.dragEnd, false);
+            this.fullScreenVerrou.current.addEventListener("touchmove", this.drag, false);
             this.fullScreenVerrou.current.addEventListener("mousemove", this.drag, false);
             this.fullScreenVerrou.current.addEventListener("mouseup", this.dragEnd, false);
+            
+            this.progressBarVolume.current.addEventListener("touchstart", this.dragStartVolume, false);
+            this.progressBarVolume.current.addEventListener("touchend", this.dragEndVolume, false);
+            this.progressBarVolume.current.addEventListener("touchmove", this.dragVolume, false);
+            this.progressBarVolume.current.addEventListener("mousedown", this.dragStartVolume, false);
+            this.progressBarVolume.current.addEventListener("mouseup", this.dragEndVolume, false);
+            this.progressBarVolume.current.addEventListener("mousemove", this.dragVolume, false);
+
+            this.VolumeVerrou.current.addEventListener("touchend", this.dragEndVolume, false);
+            this.VolumeVerrou.current.addEventListener("touchmove", this.dragVolume, false);
+            this.VolumeVerrou.current.addEventListener("mousemove", this.dragVolume, false);
+            this.VolumeVerrou.current.addEventListener("mouseup", this.dragEndVolume, false);
         }
         componentWillUnmount() {
             console.log('unmount');
@@ -170,6 +229,7 @@ class AudioController extends Component {
                 delete this.audio;
                 this.audio = new Audio(nextProps.url);
                 this.audio.preload = "metadara";
+                this.audio.volume = this.state.volume;
                 this.audio.addEventListener('loadedmetadata', ()=>{
                     console.log('eventHandler : ' + this.audio.duration);
                     this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
@@ -226,6 +286,13 @@ class AudioController extends Component {
 
                         <div className={style.AudioButtonRepeatVolume}>
                             <div className={style.Repeat}><img src={Repeat} alt="Reapeat"/></div>
+                            <div className={style.VolumeVerrou} ref={this.VolumeVerrou}></div>
+                            <div className={style.AudioProgressVolume}>
+                                <div className={style.AudioProgressBarVolume} ref={this.progressBarVolume}>
+                                    <div className={style.AudioProgressBarFullVolume}></div>
+                                    <div className={style.Pin}></div>
+                                </div>
+                            </div>
                             <div className={style.Volume}><img src={Volume} alt="Volume"/></div>
                         </div>
 

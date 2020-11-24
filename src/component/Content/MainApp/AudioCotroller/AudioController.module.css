@@ -9,10 +9,7 @@
     justify-content: space-between;
     align-items: center;
 }
-.AudioControllerMain{
-    max-width: 500px;
-    width: 100%;
-}
+
 
 .TitleMusic{
     font-family: 'Rubik', sans-serif;
@@ -74,10 +71,11 @@
     z-index: 1000;
 }
 
-.AudioProgressBar{
+.AudioProgressBar, .AudioProgressBarVolume{
     display: flex;
     justify-content: flex-start;
     cursor: pointer;
+    overflow-x: visible;
 }
 
 .AudioProgressBar, .AudioProgressBarFull{
@@ -99,8 +97,46 @@
     border-radius: 15px;
     transform: translateY(-6px);
 }
+                        /* Volume */
+.AudioProgressBarVolume{
+    width: 80px;
+    position: absolute;
+    top: -23px;
+    right: -14px;
+    transform: rotate(-90deg);
+    background: aqua;
+    height: 2px;
+    border-radius: 3px;
+}
+.AudioProgressBarFullVolume{
+    position: relative;
+    background-color: #ff7276;
+    width: 0%;
+    transition: width 1ms linear 0.1ms;
+    height: 100%;
+    border-radius: 3px;
+}
+.AudioProgressBarVolume .Pin{
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    transform: translateY(-3px);
+}
+.VolumeVerrou{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: none;
+}
+                        /* Volume */
 @media screen and (width <= 768px){
     .AudioControllerMain{
+        width: 100%;
+        padding: 0 7px;
+        max-width: 675px;
         margin: 0 auto;
     }
     .Timers{
@@ -154,6 +190,8 @@
     }
 }
 @media screen and (width > 768px) {
+
+
     .Timers{
         font-size: 9pt;
         color: white;
@@ -171,14 +209,18 @@
         border-radius: 10px;  
         transform: translateY(-4px);
     }
+    .AudioControllerLogo{
+        width: 20%;
+    }
     .AudioControllerLogo img{
         width: 100px;
+        float: right;
     }
     .MusicInfoContainer{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 200px;
+        width: 20%;
         overflow: hidden;
 
     }
@@ -192,9 +234,24 @@
         height: 60px;
     }
     .MusicInfoText{
-        font-size: 10pt;
+        font-size: 8.5pt;
         color: white;
         padding: 0 6px;
-        
+    }
+    
+    .MusicInfoText .TitleMusic{
+        margin-bottom: 7px;
+    }
+    .AudioControllerMain{
+        width: 60%;
+        max-width: 400px;
+    }
+    @media screen and (width > 1100px) {
+        .AudioControllerMain{
+            max-width: 1100px;
+        }
+        .MusicInfoText{
+            font-size: 10pt;
+        }
     }
 }
