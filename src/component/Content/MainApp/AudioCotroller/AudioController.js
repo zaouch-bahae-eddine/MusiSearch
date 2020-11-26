@@ -8,6 +8,7 @@ import DownloadMusic from '../../../../img/AudioControllerIcons/DownloadMusique.
 import Heart from '../../../../img/AudioControllerIcons/heart.png';
 import HeartFull from '../../../../img/AudioControllerIcons/heart-full.png';
 import Repeat from '../../../../img/AudioControllerIcons/repeat.svg';
+import RepeatFull from '../../../../img/AudioControllerIcons/repeatFull.svg';
 import Volume from '../../../../img/AudioControllerIcons/volume.svg';
 import Mute from '../../../../img/AudioControllerIcons/mute.svg';
 import LoadingMusic from '../../../../img/AudioControllerIcons/loadingMusic.svg';
@@ -19,8 +20,8 @@ class AudioController extends Component {
         this.state = {
             played: false,
             volume: 0.5,
-            currentTime: 0,
             muted: false,
+            repeated: false,
         };
         this.audio = new Audio(props.url);
         this.audio.preload = "metadata";
@@ -132,15 +133,12 @@ class AudioController extends Component {
         }
     }
     /*Volume Logic */
-    muteVolume = () =>{
-        //let p = e.target.getBoundingClientRect();
-        //this.progressBarVolume.current.style.
-        /*console.log('left: ' + p.left + ' right: '+ p.right + ' top: '+ p.top +
-        ' bottom: '+ p.bottom + "offsetLeft: " + e.target.offsetTop);
-        this.progressBarVolume.current.style.visibility = "visible";
-        this.progressBarVolume.current.style.top = p.top - 44 +'px';
-        this.progressBarVolume.current.style.left = p.left - 30 +'px';*/
-
+    repeat = () => {
+        this.setState((prevState) => {
+            return {repeated : !prevState.repeated};
+        });
+    }
+    muteVolume = () => {
         if(this.audio.volume != 0){
             this.audio.volume = 0;
             this.setState({muted: true});
@@ -212,13 +210,13 @@ class AudioController extends Component {
                 this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
             });
             this.audio.addEventListener('ended', ()=>{
-                console.log('endeed:componentDidMount');
-                this.setState(()=>{
-                    return {played: false, currentTime: 0};
-                });
-                this.stopTimeReading();
-                this.currentTimeTimer.current.innerHTML = this.formatTime(0);
-                this.progressBar.current.firstElementChild.style.width = "0";
+                    this.stopTimeReading();
+                    this.currentTimeTimer.current.innerHTML = this.formatTime(0);
+                    this.progressBar.current.firstElementChild.style.width = "0";
+                    if (!this.state.repeated) {
+                        this.nextAudio();
+                    }
+                    this.switchPlay();                
             });
             // Pist Listners
             this.progressBar.current.addEventListener("touchstart", this.dragStart, false);
@@ -258,12 +256,13 @@ class AudioController extends Component {
                 this.setState({duration: this.audio.duration});
             });
             this.audio.removeEventListener('ended', ()=>{
-                console.log('endeed:componentWillUnmount');
-                this.setState(()=>{
-                    return {played: false, currentTime: 0};
-                });
-                this.fullProgressBarPurcent = 0;
-                this.progressBar.current.firstElementChild.style.width = this.fullProgressBarPurcent;
+                this.stopTimeReading();
+                this.currentTimeTimer.current.innerHTML = this.formatTime(0);
+                this.progressBar.current.firstElementChild.style.width = "0";
+                if (!this.state.repeated) {
+                    this.next();
+                }
+                this.switchPlay();
             });
             this.progressBar.current.removeEventListener("touchstart", this.dragStart, false);
             this.progressBar.current.removeEventListener("touchend", this.dragEnd, false);
@@ -290,16 +289,19 @@ class AudioController extends Component {
                     this.durationTimer.current.innerHTML = this.formatTime(this.audio.duration);
                 });
                 this.audio.addEventListener('ended', ()=>{
-                    this.setState(()=>{
-                        return {played: false, currentTime: 0};
-                    });
                     this.stopTimeReading();
                     this.currentTimeTimer.current.innerHTML = this.formatTime(0);
                     this.progressBar.current.firstElementChild.style.width = "0";
+                    if (!this.state.repeated) {
+                        this.nextAudio();
+                    }
+                    this.switchPlay();
                 });
-                console.log('should :' + this.audio.preload );
                 return true;
-            } else if (this.props.played != nextState.played || this.state.muted != nextState.muted){
+            } else if (this.props.played != nextState.played ||
+                 this.state.muted != nextState.muted ||
+                 this.state.repeated != nextState.repeated ||
+                 this.props.favorit != nextProps.favorit){
                 return true;
             } else {
                 return false;
@@ -332,9 +334,10 @@ class AudioController extends Component {
                             <div className={style.Download}>
                                 <img src={DownloadMusic} alt="DownloadMusic" onClick={this.downloadMusic}/>
                             </div>
-                            <div className={style.Favorit}><img src={Heart} alt="favoritSong"/></div>
+                            <div className={style.Favorit}>
+                                <img src={this.props.favorit? HeartFull : Heart} onClick={()=>{this.props.setFavorit()}} alt="favoritSong"/>
+                            </div>
                         </div>
-
                         <div className={style.AudioButtonControl}>
                             <div className={style.Previose} 
                                 onClick={()=>{this.previousAudio()}}><FontAwesomeIcon icon={faStepBackward}/></div>
@@ -345,7 +348,7 @@ class AudioController extends Component {
                         </div>
 
                         <div className={style.AudioButtonRepeatVolume}>
-                            <div className={style.Repeat}><img src={Repeat} alt="Reapeat"/></div>
+                            <div className={style.Repeat}><img src={this.state.repeated? RepeatFull : Repeat} alt="Reapeat" onClick={()=>this.repeat()}/></div>
                             <div className={style.VolumeVerrou} ref={this.VolumeVerrou}></div>
                             <div className={style.Volume} >
                                 <div className={style.AudioProgressVolume}>

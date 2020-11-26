@@ -24,7 +24,7 @@ const Header = (props)=>{
                             <h1 className={style.HeaderTitle}>Musi<span>Search</span></h1>
                             <p className={style.HeaderDescription}>Lorem ipsum dolor, sit cessitatibus praesentium ratione dolore porro quos culpa quia.</p>
                             <div className={style.HeaderButton}>
-                                <a href="#" className={style.Sinscrir}> S'inscrir</a>
+                                <a href="#" className={style.Sinscrir}> S'inscrire</a>
                             </div>
                         </div>
                     </div>
