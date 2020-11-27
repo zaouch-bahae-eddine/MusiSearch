@@ -1,5 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faUserFriends, faSearch } from '@fortawesome/free-solid-svg-icons';
 import React, { Component } from 'react'
 import AudioController from './AudioCotroller/AudioController'
+import style from './MainApp.module.css';
+import LogoSimple from '../../../img/logoSimple.png';
 class MainApp extends Component {
     state={
         audios: [
@@ -59,7 +63,38 @@ class MainApp extends Component {
         console.log('render - 1');
         console.log('url1: ' + this.state.audios[this.state.current].url);
         return (
-            <div>
+            <div className={style.MainAppContainer}>
+                <div className={style.MainAppHeader}>
+                    <div className={style.MainAppHeaderContainer}>
+                        <div className={style.Header}>
+                            <div className={style.triggerMenu}>
+                                <FontAwesomeIcon className={style.Icon} icon={faBars}/>
+                            </div>
+                            <div className={style.logo}>
+                                <img src={LogoSimple} alt="menu"/>
+                            </div>
+                            <div className={style.triggrtFrinds}>
+                                <FontAwesomeIcon className={style.Icon} icon={faUserFriends}/>
+                            </div>
+                        </div>
+                        <div className={style.searchField}>
+                            <form>
+                                <input type="text"/><FontAwesomeIcon icon={faSearch} className={style.searchIcon}/>
+                            </form>
+                        </div>
+                        <div className={style.newPostButton}></div>
+                        <div className={style.titlesPost}>
+                            <h3 className={style.titlePost}>Titre</h3>
+                            <h3 className={style.titlePost}>Musicien</h3>
+                            <h3 className={style.titlePost}>Instrument</h3>
+                        </div>
+                    </div>
+                </div>
+                <div className={style.MainAppBody}>
+                    <div className={style.item}></div>
+                    <div className={style.item}></div>
+                    <div className={style.item}></div>
+                </div>
                 <AudioController 
                 id = {this.state.audios[this.state.current].id}
                 title={this.state.audios[this.state.current].title} 
