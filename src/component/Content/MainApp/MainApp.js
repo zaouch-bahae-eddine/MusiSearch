@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import AudioController from './AudioCotroller/AudioController'
 import style from './MainApp.module.css';
 import LogoSimple from '../../../img/logoSimple.png';
+import addMusicIcoon from '../../../img/AudioControllerIcons/musicalNote.png';
 class MainApp extends Component {
     state={
         audios: [
@@ -82,11 +83,13 @@ class MainApp extends Component {
                                 <input type="text"/><FontAwesomeIcon icon={faSearch} className={style.searchIcon}/>
                             </form>
                         </div>
-                        <div className={style.newPostButton}></div>
-                        <div className={style.titlesPost}>
-                            <h3 className={style.titlePost}>Titre</h3>
-                            <h3 className={style.titlePost}>Musicien</h3>
-                            <h3 className={style.titlePost}>Instrument</h3>
+                        <div className={style.titlesContainer}>
+                            <div className={style.newPostButton}><img src={addMusicIcoon} /> &nbsp; Musique</div>
+                            <div className={style.titlesPost}>
+                                <h3 className={style.titlePost}>Titre</h3>
+                                <h3 className={style.titlePost}>Musicien</h3>
+                                <h3 className={style.titlePost}>Instrument</h3>
+                            </div>
                         </div>
                     </div>
                 </div>

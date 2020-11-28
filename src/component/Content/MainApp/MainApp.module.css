@@ -8,6 +8,14 @@
     margin: 0;
     overflow-x: scroll;
 }
+.MainAppHeader{
+    position: fixed;
+    z-index: 11;
+    background: #111524;
+}
+.MainAppBody{
+    margin-top: 196px;
+}
 .MainAppBody, .MainAppHeader{
     display: flex;
     width: 100%;
@@ -41,7 +49,7 @@
     display: block;
     background-color: #242B47;
     border-radius: 50px;
-    width: 75%;
+    width: 50%;
     height: 30px;
     padding: 7px 45px 7px 20px;
     color: lightgray;
@@ -56,6 +64,39 @@
     top: 8px;
     left: -31px;
 }
+.titlesPost{
+    display: flex;
+    padding-bottom: 15px;
+    justify-content: space-around;
+    color: white;
+    font-size: 9pt;
+    align-items: center;
+    width: 70%;
+    margin: 0 auto;
+}
+.titlePost:first-of-type{
+    width: 40%;
+}
+.newPostButton{
+    width: 40%;
+    background-color: #ff7276;
+    height: 26px;
+    font-size: 9pt;
+    color: white;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 18px auto;
+}
+.newPostButton img{
+    width: 16px;
+}
+.titlePost:nth-of-type(2), .titlePost:nth-of-type(3){
+    width: 30%;
+    text-align: center;
+}
+
 .item{
     width: 400px;
     height: 30px;
