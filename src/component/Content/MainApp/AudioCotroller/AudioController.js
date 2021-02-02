@@ -58,6 +58,7 @@ class AudioController extends Component {
         });
         this.props.next();
         this.progressBar.current.firstElementChild.style.width = 0;
+        console.log(this.progressBar);
         this.currentTimeTimer.current.innerHTML = this.formatTime(0);
     }
     previousAudio = () => {

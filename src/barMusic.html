@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="./component/Content/MainApp/AudioCotroller/AudioController.module.css">
+</head>
+<body>
+    <!--Audio Controller-->
+
+    <div>
+       
+        <div class="AudioContainer">
+            <div class="MusicInfoContainer">
+                <div class="MusicInfo">
+                    <img src="img/AudioControllerIcons/record.png" alt="photoMusic" id="imgMusic"/>
+                    <img src="./img/AudioControllerIcons/loadingMusic.svg"  class="LoadingMusic" alt="photoMusic" id="LoadingMusic"/>
+                    <div class="MusicInfoText">
+                        <div class="TitleMusic" id="TitleMusic" ></div>
+                        <div class="Artist" id="Artist" ></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="AudioControllerMain">
+                <div class="AudioButtonControlContainer">
+
+                    <div class="AudioButtonFavoritDownload">
+                        <div class="Download">
+                            <img src="./img/AudioControllerIcons/DownloadMusique.png" alt="DownloadMusic" id="DownloadMusic"/>
+                        </div>
+                        <div class="Favorit">
+                            <img id="Favorit" src="./img/AudioControllerIcons/heart.png" alt="favoritSong"/>
+                        </div>
+                    </div>
+                    <div class="AudioButtonControl">
+                        <div class="Previose" id="Previose">
+                            <img src="./img/previous.png" alt="previous"/>
+                        </div>
+                        <div class="PlayPause" id="PlayPause">
+                            <img src="./img/AudioControllerIcons/play.png" alt="play"/>
+                        </div>
+                        <div class="Next" id="Next">
+                            <img src="./img/AudioControllerIcons/next.png" alt="next"/>
+                        </div>
+                    </div>
+
+                    <div class="AudioButtonRepeatVolume">
+                        <div class="Repeat">
+                            <img id="Repeat" src="./img/AudioControllerIcons/repeat.svg" />
+                        </div>
+                        <div class="VolumeVerrou" id="VolumeVerrou"></div>
+                        <div class="Volume" >
+                            <div class="AudioProgressVolume">
+                            <div class="AudioProgressBarVolume" id="progressBarVolume">
+                                <div class="AudioProgressBarFullVolume"></div>
+                                    <div class="Pin"></div>
+                                </div>  
+                            </div>
+                            <img id="volumeIcon" src="./img/AudioControllerIcons/volume.svg" alt="Volume" /></div>
+                        </div>
+
+                </div>
+                <div class="Timers">
+                    <div class="currentTime" id="currentTimeTimer">--:--</div>
+                    <div class="duration" id="durationTimer">--:--</div>
+                </div>
+
+                <div class="FullScreenVerrou" id="fullScreenVerrou"></div>
+
+                <div class="AudioProgress">
+                    <div class="AudioProgressBar" id="progressBar">
+                        <div class="AudioProgressBarFull"></div>
+                        <div class="Pin"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="AudioControllerLogo">
+                <img src="./img/logo.png" alt="logo"/>
+            </div>
+        </div>
+
+    </div>
+    <!--Audio Controller-->
+</body>
+<script>
+    //Liste des musiques
+    data =  {
+                "11": {
+                    "id": 11,
+                    "artiste": {
+                        "id": 4,
+                        "nom": "zaouch",
+                        "prenom": "nor",
+                        "img": "http://127.0.0.1:8000/uploads/imgProfile/"
+                    },
+                    "titre": "Podcast Education",
+                    "img": "http://127.0.0.1:8000/uploads/imgProfile/wallpaper-6015200b0a222.jpeg",
+                    "son": "http://127.0.0.1:8000/uploads/music/s3-triller-6015200b003c4.mp4",
+                    "dateCreation": "30-01-2021 08:59:55",
+                    "style": "Podcast",
+                    "favorit": true
+                },
+                "12": {
+                    "id": 12,
+                    "artiste": {
+                        "id": 4,
+                        "nom": "oiseau",
+                        "prenom": "bahae",
+                        "img": "http://127.0.0.1:8000/uploads/imgProfile/"
+                    },
+                    "titre": "Podcast Histoir",
+                    "img": "http://127.0.0.1:8000/uploads/imgProfile/wallpaper-601527469cd04.jpeg",
+                    "son": "http://127.0.0.1:8000/uploads/music/s4-triller-60152746499fa.mp4",
+                    "dateCreation": "30-01-2021 09:30:46",
+                    "style": "Podcast",
+                    "favorit": true
+                }
+            };
+
+    //Liste des musiques
+
+    //
+    state = {
+        played: false,
+        volume: 0.5,
+        muted: false,
+        repeated: false,
+        idMusic: Object.keys(data),
+        currentId: 0,
+    };
+
+    /* Variables globales */
+
+    let audio = new Audio(data[state.idMusic[state.currentId]].son);
+        audio.preload = "metadata";
+        audio.volume = state.volume;
+        let timeTrigger = null;
+        let fullProgressBarPurcent = 0;
+        let fullProgressBarPurcentVolume = 0;
+
+    /* Variables globales */
+
+
+    //referance des ellemnt html
+
+        let fullScreenVerrou = null;
+        let progressBar = null;
+        let durationTimer = null;
+        let currentTimeTimer = null;
+        let progressBarVolume = null;
+        let VolumeVerrou = null;
+        let volumeIcon = null;
+
+    //referance des ellemnent html
+
+    /*Block Ref and element that must change whene with action*/
+        
+
+switchPlay = () => {
+
+    state.played = ! state.played;
+    if(audio.paused){
+        audio.play();
+        startTimeReading();
+    }
+    else {
+        audio.pause();
+        stopTimeReading();
+    }
+}
+next = () => {
+    if(state.idMusic.length > state.currentId){
+        state.currentId++;
+    } else {
+        state.currentId = 0; 
+    }
+    audio = new Audio(data[state.idMusic[state.currentId]].son);
+}
+previous = () => {
+    if(state.currentId > 0 ){
+        state.currentId--;
+    } else {
+        state.currentId = state.idMusic.length; 
+    }
+    audio = new Audio(data[state.idMusic[state.currentId]].son);
+}
+nextAudio = () => {
+    audio.pause();
+    state.played = false;
+    next();
+    progressBar.firstElementChild.style.width = 0;
+    currentTimeTimer.innerHTML = formatTime(0);
+}
+previousAudio = () => {
+    if(audio.currentTime < 3) {
+        previous();
+    }
+    audio.pause();
+    audio.currentTime = 0;
+    progressBar.firstElementChild.style.width = "0%";
+    currentTimeTimer.innerHTML = formatTime(0);
+    
+    state.played = false;        
+}
+downloadMusic = () => {
+    FileSaver.saveAs(
+        data[state.idMusic[state.currentId]].son,
+        data[state.idMusic[state.currentId]].titre.replace(/\s/g, '_') +
+        '-' + data[state.idMusic[state.currentId]].artiste.replace(/\s/g, '_')
+    );
+}
+startTimeReading = () => {
+    timeTrigger = setInterval(() => {
+        if(currentTimeTimer != null)
+            currentTimeTimer.innerHTML = formatTime(audio.currentTime);
+        fullProgressBarPurcent = (audio.currentTime * 100 / audio.duration) ;
+        if(currentTimeTimer != null)
+            progressBar.firstElementChild.style.width = fullProgressBarPurcent + "%";
+    }, 100);
+}
+stopTimeReading = () => {
+    clearInterval(timeTrigger);
+}
+formatTime = (time) => {
+    if (isNaN(time))
+        return '--:--';
+    var min = Math.floor(time / 60);
+    var sec = Math.floor(time % 60);
+    return min + ':' + ((sec<10) ? ('0' + sec) : sec);
+}
+
+
+/* DRAG AND DROP LOGIC */
+let active = false;
+progressUpdate = (e) => {
+    let progressBarWidth = progressBar.clientWidth;
+    if (e.type === "touchstart" || e.type === "touchmove")
+        fullProgressBarPurcent  = (((e.touches[0].clientX - progressBar.offsetLeft - 3)*100) / progressBarWidth);
+    else 
+        fullProgressBarPurcent = (((e.clientX - progressBar.offsetLeft - 3)*100) / progressBarWidth);
+    progressBar.firstElementChild.style.width = fullProgressBarPurcent > 0 ? (fullProgressBarPurcent + "%") : "0" ;
+}
+dragStart = (e) => {
+    stopTimeReading();
+    progressUpdate(e);
+    audio.pause();
+    audio.currentTime = (audio.duration * fullProgressBarPurcent) / 100;
+    currentTimeTimer.innerHTML = formatTime(audio.currentTime);
+    fullScreenVerrou.style.display = "block";
+    active = true;
+}
+drag = (e) => {
+    if(active) {
+        progressUpdate(e);
+        currentTimeTimer.innerHTML = formatTime(audio.currentTime);
+        audio.currentTime = (audio.duration * fullProgressBarPurcent) / 100;
+    }
+}
+dragEnd = (e) => {
+    active = false;
+    fullScreenVerrou.style.display = "none";
+    audio.currentTime = (audio.duration * fullProgressBarPurcent) / 100;
+    currentTimeTimer.innerHTML = formatTime(audio.currentTime);
+    if(state.played) {
+       audio.play();
+       startTimeReading();
+    }
+}
+/*Volume Logic */
+repeat = () => {
+    state.repeated = !state.repeated;
+}
+muteVolume = () => {
+    if(audio.volume != 0){
+        audio.volume = 0;
+        state.muted = true;
+        progressBarVolume.style.visibility = "hidden";
+    } else {
+        audio.volume = state.volume;
+        state.muted = false;
+    }
+
+}
+progressBarVolumeShow = (e) => {
+
+    clearTimeout(VolumeHideRef);
+    if (progressBarVolume.style.visibility == "" ||
+    progressBarVolume.style.visibility == "hidden" ) {
+        let p = e.target.getBoundingClientRect();
+        progressBarVolume.style.top = p.top - 35 +'px';
+        progressBarVolume.style.left = p.left - 22 +'px';
+    }
+    progressBarVolume.style.visibility = "visible";
+}
+progressBarVolumeHide = () => {
+    VolumeHideRef = setTimeout(
+        () => {
+            progressBarVolume.style.visibility = "hidden";
+        }
+    ,1000);
+}
+VolumeProgressUpdate = (e) => {
+    let position = progressBarVolume.getBoundingClientRect();
+    const raport = position.bottom - position.top;
+    let postionRaport = -(e.clientY - position.bottom);
+    if (postionRaport <= 0) {
+        fullProgressBarPurcentVolume = 0;
+    } else if (postionRaport >= position.top){
+        fullProgressBarPurcentVolume = 100;
+    } else {
+        fullProgressBarPurcentVolume = postionRaport * 100 / raport;
+    }
+    progressBarVolume.current.firstElementChild.style.width = fullProgressBarPurcentVolume >100 ? "100%" : fullProgressBarPurcentVolume + "%";
+    audio.volume = fullProgressBarPurcentVolume / 100 > 1? 1: fullProgressBarPurcentVolume / 100;
+    state.volume = audio.volume;
+}
+let activeVolume = false;
+dragStartVolume = (e) => {
+   VolumeVerrou.style.display = "block";
+   VolumeProgressUpdate(e);
+   activeVolume = true;
+}
+dragVolume = (e) => {
+    if(activeVolume) {
+        
+    console.log('position: ' + e.clientY + " offsetBottom: " + progressBar.offsetTop);
+        VolumeProgressUpdate(e);
+        clearTimeout(VolumeHideRef);
+     }
+}
+dragEndVolume = (e) => {
+    activeVolume = false;
+    VolumeVerrou.style.display = "none";
+    setState({muted: false});
+    progressBarVolumeHide();
+}
+
+/* DRAG AND DROP LOGIC */
+
+initMusic = ()=>{
+    imgMusic.src = data[state.idMusic[state.currentId]].img;
+    LoadingMusic.style.display = "none";
+    TitleMusic.innerHTML = data[state.idMusic[state.currentId]].titre;
+    Artist.innerHTML = data[state.idMusic[state.currentId]].artiste.nom +' ' + data[state.idMusic[state.currentId]].artiste.prenom;
+
+    DownloadMusic.onclick = function(){
+        downloadMusic();
+    };
+    if(data[state.idMusic[state.currentId]].favorit){
+            Favorit.src = "./img/AudioControllerIcons/heart.png"
+        }else{
+            Favorit.src = "./img/AudioControllerIcons/heart-full.png"
+    }
+    Favorit.onclick = function(){
+        if(data[state.idMusic[state.currentId]].favorit){
+            Favorit.src = "./img/AudioControllerIcons/heart.png"
+            //Add or delete from Favori Request
+        }else{
+            Favorit.src = "./img/AudioControllerIcons/heart-full.png"
+            //Add or delete from Favori Request
+        }
+    };
+    Previose.onclick = function(){
+        previousAudio();
+    };
+    PlayPause.onclick = function(){
+        switchPlay();
+        if(!state.played){
+            PlayPause.firstElementChild.src = "./img/AudioControllerIcons/play.png";
+        } else {
+            PlayPause.firstElementChild.src = "./img/AudioControllerIcons/pause.png";
+        }
+    };
+    Next.onclick = function(){
+        nextAudio();
+    }
+    Repeat.onclick = function(){
+        repeat();
+        if(state.repeated){
+            Repeat.src = "./img/AudioControllerIcons/repeatFull.svg";
+        } else {
+            Repeat.src = "./img/AudioControllerIcons/repeat.svg";
+        }
+    };
+    volumeIcon.onclick = function(){
+        muteVolume();
+        if(state.muted){
+            volumeIcon.src = "./img/AudioControllerIcons/mute.svg";
+        } else {
+            volumeIcon.src = "./img/AudioControllerIcons/volume.svg";
+        }
+    };
+    currentTimeTimerRef.onclick = function () {
+        formatTime(this.audio.currentTime);
+    };
+    durationTimerRef.onclick = function () {
+        formatTime(this.audio.currentTime);
+    };
+}
+(function(){
+        let imgMusic = document.getElementById("imgMusic");
+        let LoadingMusic = document.getElementById("LoadingMusic");
+        let TitleMusic = document.getElementById("TitleMusic");
+        let Artist = document.getElementById("Artist");
+        let DownloadMusic = document.getElementById("DownloadMusic");
+        let Favorit = document.getElementById("Favorit");
+        let Previose = document.getElementById("Previose");
+        let PlayPause = document.getElementById("PlayPause");
+        let Next = document.getElementById("Next");
+        let Repeat = document.getElementById("Repeat");
+        let VolumeVerrouRef = document.getElementById("VolumeVerrou");
+        let progressBarVolumeRef = document.getElementById("progressBarVolume");
+        let volumeIconRef = document.getElementById("volumeIcon");
+        let currentTimeTimerRef = document.getElementById("currentTimeTimer");
+        let durationTimerRef = document.getElementById("durationTimer");
+        let fullScreenVerrouRef = document.getElementById("fullScreenVerrou");
+        let progressBarRef = document.getElementById("progressBar");
+
+        let fullScreenVerrou = fullScreenVerrouRef;
+        let progressBar = progressBarRef;
+        let durationTimer = durationTimerRef;
+        let currentTimeTimer = currentTimeTimerRef;
+        let progressBarVolume = progressBarVolumeRef;
+        let VolumeVerrou = VolumeVerrouRef;
+        let volumeIcon = volumeIconRef;
+
+    
+
+        /* Listeners */
+
+            window.onresize = ()=> progressBarVolumeRef.style.visibility = "hidden";
+            progressBarVolumeRef.firstElementChild.style.width = state.volume * 100 + "%";
+            audio.addEventListener('loadedmetadata', ()=>{
+                console.log('eventHandler : ' + audio.duration);
+                durationTimerRef.innerHTML = formatTime(audio.duration);
+            });
+            audio.addEventListener('ended', ()=>{
+                    stopTimeReading();
+                    currentTimeTimer.innerHTML = formatTime(0);
+                    progressBarRef.firstElementChild.style.width = "0";
+                    if (!state.repeated) {
+                        nextAudio();
+                    }
+                    switchPlay();                
+            });
+            // Pist Listners
+            progressBarRef.addEventListener("touchstart", dragStart, false);
+            progressBarRef.addEventListener("touchend", dragEnd, false);
+            progressBarRef.addEventListener("touchmove", drag, false);
+            progressBarRef.addEventListener("mousedown", dragStart, false);
+            progressBarRef.addEventListener("mouseup", dragEnd, false);
+            progressBarRef.addEventListener("mousemove", drag, false);
+            
+            fullScreenVerrouRef.addEventListener("touchend", dragEnd, false);
+            fullScreenVerrouRef.addEventListener("touchmove", drag, false);
+            fullScreenVerrouRef.addEventListener("mousemove", drag, false);
+            fullScreenVerrouRef.addEventListener("mouseup", dragEnd, false);
+            //Volume Listeners
+            progressBarVolumeRef.addEventListener("touchstart", dragStartVolume, false);
+            progressBarVolumeRef.addEventListener("touchend", dragEndVolume, false);
+            progressBarVolumeRef.addEventListener("touchmove", dragVolume, false);
+            progressBarVolumeRef.addEventListener("mousedown", dragStartVolume, false);
+            progressBarVolumeRef.addEventListener("mouseup", dragEndVolume, false);
+            progressBarVolumeRef.addEventListener("mousemove", dragVolume, false);
+
+            VolumeVerrouRef.addEventListener("touchend", dragEndVolume, false);
+            VolumeVerrouRef.addEventListener("touchmove", dragVolume, false);
+            VolumeVerrouRef.addEventListener("mousemove", dragVolume, false);
+            VolumeVerrouRef.addEventListener("mouseup", dragEndVolume, false);
+            // Volume Show-Hide
+            volumeIconRef.addEventListener("mouseover", (e) => progressBarVolumeShow(e), false);
+            progressBarVolumeRef.addEventListener("mouseover", (e) => progressBarVolumeShow(e), false);
+            volumeIconRef.addEventListener("mouseout", progressBarVolumeHide, false);
+            progressBarVolumeRef.addEventListener("mouseout", progressBarVolumeHide, false);
+
+        /* Listeners */
+        //Refs
+        initMusic();
+    })();
+</script>
+
+</html>
+

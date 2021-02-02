@@ -139,7 +139,7 @@
     z-index: 1;
 }
                         /* Volume */
-@media screen and (width <= 768px){
+@media screen and (max-width : 768px){
     .AudioControllerMain{
         width: 100%;
         padding: 0 7px;
@@ -200,7 +200,7 @@
         display: none;
     }
 }
-@media screen and (width > 768px) {
+@media screen and (min-width : 768px) {
 
 
     .Timers{
@@ -257,7 +257,7 @@
         width: 60%;
         max-width: 400px;
     }
-    @media screen and (width > 1100px) {
+    @media screen and (min-width : 1100px) {
         .AudioControllerMain{
             max-width: 1100px;
         }
